@@ -3,7 +3,7 @@ The goal of this project is to collect and organize input from several scales an
 The data needs to be in a format that can be easily imported into Excel.
 
 ##Assumptions
-- There will always be 10 or fewer scales
+- There will always be exactly 10 scales
 - All data will be present at time of collection (scales loaded, user input completed)
 - Values will be displayed as they are collected
 - Scale configuration/identity will not change after initial setup *(ID comes from scale or USB-to-RS232 Adapter???)*
