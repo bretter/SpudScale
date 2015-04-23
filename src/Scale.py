@@ -1,48 +1,48 @@
+#!/usr/bin/python3
+
 import serial
-import threading
+#import io
 
 class Scale:
 
-    def __init__(self, comPort, test=False) :
-        self.TEST = test
+    def __init__(self, comPort, container, index) :
+        self.container = container
+        self.index = index
         self.port = comPort
-        self.recentValues = [0] * 10
-        self.stable = False
-        self.identity = "unknown"
-        if self.TEST :
-            self.rand = __import__('random')
-        else :
-            self.serialPort = serial.Serial(comPort)
-            getName(serialPort)
-            self.readThread = threading.Thread(target=portReader, args=(serialPort))
-            readThread.start()
+        self.ser = serial.Serial(
+            port=comPort,\
+            baudrate=9600,\
+            parity=serial.PARITY_NONE,\
+            stopbits=serial.STOPBITS_ONE,\
+            bytesize=serial.EIGHTBITS,\
+            timeout=None)
+        self.readLoop()
 
-    def query(self) :
-        """
-        Returns a tuple with the most recently read value and the stability status.
-        """
-        if not self.TEST :
-            return (self.recentValues[0], self.stable)
-        else:
-            return (self.rand.uniform(0,75), self.rand.choice([True, False]))
 
-    def update(self, newReading) :
-        """
-        Appends the most recently read value to the head of recentValues and trims the tail.
-        Determines weather conditions for stability have been met.
-        """
+    def readLoop(self) :
+        # length of scale output (used to ensure only complete messages are processed)
+        msgLength = 21
+        while True :
+            rawLine = self.ser.readline()
+            while len(rawInput) = msgLength :
+                line = rawLine.decode('ascii')
+                print(rawInput)
+                print(len(rawInput))
+                name = rawInput[0]
+                sign = rawInput[6]
+                value = float(rawInput[9:13])
+                unit = rawInput[15:17]
+                if (sign == '-') :
+                    value = 0
+                sp = "        "
+                print("NAME: " + name + sp + "SIGN: " + sign + sp + "UNIT: " + unit + sp + "VALUE: " + value)
+                self.container[self.index] = (name, value)
 
-    def discoverName(self, serialPort) :
-        """
-        Parses the scale input for the identiy of the scale and assigns a name to identity.
-        """
 
 def main() :
-    time = __import__('time')
-    scale = Scale('comNone', True)
-    while True :
-        print(scale.query())
-        time.sleep(3)
+    container = [0]*10
+    index = 1
+    Scale('COM15', container, index)
 
 if __name__ == '__main__':
     main()
