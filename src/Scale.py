@@ -1,11 +1,13 @@
 #!/usr/bin/python3
 
+import threading
 import serial
-#import io
 
-class Scale:
+class Scale(threading.Thread):
 
     def __init__(self, comPort, container, index) :
+        threading.Thread.__init__(self, daemon=True)
+        self._stop = threading.Event()
         self.container = container
         self.index = index
         self.port = comPort
@@ -16,33 +18,47 @@ class Scale:
             stopbits=serial.STOPBITS_ONE,\
             bytesize=serial.EIGHTBITS,\
             timeout=None)
-        self.readLoop()
 
-
-    def readLoop(self) :
+    def run(self) :
         # length of scale output (used to ensure only complete messages are processed)
         msgLength = 21
         while True :
             rawLine = self.ser.readline()
-            while len(rawInput) = msgLength :
+            if (len(rawLine) == msgLength) :
                 line = rawLine.decode('ascii')
-                print(rawInput)
-                print(len(rawInput))
-                name = rawInput[0]
-                sign = rawInput[6]
-                value = float(rawInput[9:13])
-                unit = rawInput[15:17]
+                print(line)
+                name = line[0]
+                sign = line[6]
+                value = float(line[9:13])
+                unit = line[15:17]
                 if (sign == '-') :
                     value = 0
                 sp = "        "
-                print("NAME: " + name + sp + "SIGN: " + sign + sp + "UNIT: " + unit + sp + "VALUE: " + value)
+                print("NAME: " + name + sp + "SIGN: " + sign + sp + "UNIT: " + unit + sp + "VALUE: " + str(value))
                 self.container[self.index] = (name, value)
+            if self.stopped() :
+                self.ser.close()
+                break
 
+# is a stop function necessary if thread runs as daemon?
+# maybe necessary to close the serial port?
+    def stop(self) :
+        self._stop.set()
+
+    def stopped(self) :
+        return self._stop.isSet()
 
 def main() :
+    import time
     container = [0]*10
     index = 1
-    Scale('COM15', container, index)
+    scale = Scale('COM15', container, index)
+    print("starting")
+    scale.start()
+    time.sleep(10)
+    print("stopping")
+    scale.stop()
+    time.sleep(10)
 
 if __name__ == '__main__':
     main()
