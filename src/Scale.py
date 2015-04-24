@@ -29,12 +29,12 @@ class Scale(threading.Thread):
                 print(line)
                 name = line[0]
                 sign = line[6]
-                value = float(line[9:13])
+                value = line[9:13]
                 unit = line[15:17]
                 if (sign == '-') :
-                    value = 0
+                    value = '0.00'
                 sp = "        "
-                print("NAME: " + name + sp + "SIGN: " + sign + sp + "UNIT: " + unit + sp + "VALUE: " + str(value))
+                print("NAME: " + name + sp + "SIGN: " + sign + sp + "UNIT: " + unit + sp + "VALUE: " + value)
                 self.container[self.index] = (name, value)
             if self.stopped() :
                 self.ser.close()
