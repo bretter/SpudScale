@@ -5,11 +5,10 @@ import serial
 
 class Scale(threading.Thread):
 
-    def __init__(self, comPort, container, index) :
+    def __init__(self, comPort, container) :
         threading.Thread.__init__(self, daemon=True)
         self._stop = threading.Event()
         self.container = container
-        self.index = index
         self.port = comPort
         self.ser = serial.Serial(
             port=comPort,\
@@ -27,15 +26,16 @@ class Scale(threading.Thread):
             if (len(rawLine) == msgLength) :
                 line = rawLine.decode('ascii')
                 print(line)
-                name = line[0]
+                ID = line[0]
                 sign = line[6]
-                value = line[9:13]
-                unit = line[15:17]
                 if (sign == '-') :
                     value = '0.00'
+                else :
+                    value = line[9:13]
+                unit = line[15:17]
                 sp = "        "
-                print("NAME: " + name + sp + "SIGN: " + sign + sp + "UNIT: " + unit + sp + "VALUE: " + value)
-                self.container[self.index] = (name, value)
+                print("ID: " + ID + sp + "SIGN: " + sign + sp + "UNIT: " + unit + sp + "VALUE: " + value)
+                self.container[ID] = value
             if self.stopped() :
                 self.ser.close()
                 break
@@ -50,9 +50,8 @@ class Scale(threading.Thread):
 
 def main() :
     import time
-    container = [0]*10
-    index = 1
-    scale = Scale('COM15', container, index)
+    container = {}
+    scale = Scale('COM15', container)
     print("starting")
     scale.start()
     time.sleep(10)
