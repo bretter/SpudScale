@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 import csv
-import ConfigReader
+from ConfigReader import *
 
 class FileManager():
 
@@ -15,15 +15,19 @@ class FileManager():
 
     def record(self, readout):
         print("recording history")
+        with open(self.historyFileName, 'a', newline='') as csvfile:
+            writer = csv.writer(csvfile, 'excel')
+            writer.writerow(readout)
 
 
 def main():
     #read config file
+    usrconfig = configReader()
 
     #to initiaize values
     fileManager = FileManager()
-    fileManager.historyFileName = 'history.csv'
-    fileManager.scaleNames = [ 'A1' , 'A2', 'A3', 'A4', 'B', 'C', 'Green', 'GC', 'Mis', 'Rots']
+    fileManager.historyFileName = usrconfig['History']
+    fileManager.scaleNames = usrconfig['Scales']
 
     #to create and save a readout
     readout = ['plotName', '12', '51', '45', '84', '32', '54', '65', '12', '45', '98']
