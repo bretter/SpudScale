@@ -31,10 +31,10 @@ class Scale(threading.Thread):
                 if (sign == '-') :
                     value = '0.00'
                 else :
-                    value = line[9:13]
+                    value = line[8:13].replace(' ','')
                 unit = line[15:17]
-                sp = "        "
-                print("ID: " + ID + sp + "SIGN: " + sign + sp + "UNIT: " + unit + sp + "VALUE: " + value)
+                #sp = "        "
+                #print("ID: " + ID + sp + "SIGN: " + sign + sp + "UNIT: " + unit + sp + "VALUE: " + value)
                 self.container[ID] = value
             if self.stopped() :
                 self.ser.close()
