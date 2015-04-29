@@ -11,7 +11,13 @@ class FileManager():
         self.readHistory
 
     def readHistory(self):
-        print("reading history")
+        history = []
+        with open(self.historyFileName, newline='') as csvfile:
+            reader = csv.reader(csvfile)
+            for row in reader:
+                history.append(row)
+
+        return history
 
     def record(self, readout):
         print("recording history")
@@ -32,6 +38,8 @@ def main():
     #to create and save a readout
     readout = ['plotName', '12', '51', '45', '84', '32', '54', '65', '12', '45', '98']
     fileManager.record(readout)
+
+    fileManager.readHistory()
 
 
 
