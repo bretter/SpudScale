@@ -6,7 +6,7 @@ class FileManager():
 
     def __init__(self, fileName):
         self.fileName = fileName
-        
+
     def readHistory(self):
         history = []
         with open(self.fileName, newline='') as csvfile:
