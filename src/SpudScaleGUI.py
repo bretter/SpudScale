@@ -8,10 +8,6 @@ IsRunning = True
 CONST_UPDATETIME = 1.0
 CONST_SIMULATION_MODE = True
 
-
-
-
-
 """run our update code in a different thread while root.mainloop runs?"""
 def update():
     if IsRunning:

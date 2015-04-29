@@ -1,5 +1,11 @@
 import yaml
 
-def configReader(self):
+def configReader():
     stream = open('spudscale.config', 'r')
-    return yaml.load_all(stream)
+    config = {}
+    for data in yaml.load_all(stream):
+        config = data
+    return config
+
+if __name__ == '__main__':
+    configReader()
