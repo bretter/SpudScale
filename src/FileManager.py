@@ -23,14 +23,14 @@ class FileManager():
 
 
 def main():
-    from ConfigReader import *
+    from ConfigReader import configReader
     #read config file
     usrconfig = configReader()
 
     #to initiaize values
-    fileManager = FileManager()
+    fileManager = FileManager('testOutput.py')
     fileManager.fileName = usrconfig['History']
-    fileManager.scaleNames = usrconfig['Scales']
+    #fileManager.scaleNames = usrconfig['Scales']
 
     #to create and save a readout
     readout = ['plotName', '12', '51', '45', '84', '32', '54', '65', '12', '45', '98']
