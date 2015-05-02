@@ -16,7 +16,6 @@ class FileManager():
         return history
 
     def record(self, readout):
-        print("recording history")
         with open(self.fileName, 'a', newline='') as csvfile:
             writer = csv.writer(csvfile, 'excel')
             writer.writerow(readout)
