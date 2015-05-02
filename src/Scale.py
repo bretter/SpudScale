@@ -32,7 +32,7 @@ class Scale(threading.Thread):
                     value = '0.00'
                 else :
                     value = line[8:13].replace(' ','')
-                unit = line[15:17]
+                #unit = line[15:17]
                 #sp = "        "
                 #print("ID: " + ID + sp + "SIGN: " + sign + sp + "UNIT: " + unit + sp + "VALUE: " + value)
                 self.container[ID] = value
