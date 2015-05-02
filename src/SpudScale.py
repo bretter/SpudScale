@@ -36,7 +36,7 @@ class SpudScale() :
 
     def getCurrentValues(self) :
         newValues = self.scaleManager.getValues()
-        for i in range(0, self.numScales - 1) :
+        for i in range(0, self.numScales) :
             name = self.orderedNames[i]
             self.currentValues[i] = newValues[name]
         return self.currentValues
