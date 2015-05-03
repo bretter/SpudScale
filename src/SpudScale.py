@@ -22,12 +22,14 @@ class SpudScale() :
         self.currentValues = [None]*self.numScales
         self.lastFiveRecorded = [[None]*(self.numOutputs)]*5
 
-        #self.ui = UI(self, inputTitle, self.orderedNames)
-
         self.scaleManager = ScaleManager(self.scaleAddressNames, comPorts)
+        self.liveValues = self.scaleManager.getLiveValues()
 
         self.fileManager = FileManager('testOutput.csv')
         self.fileManager.record(self.inputTitle + self.orderedNames)
+
+        #self.ui = UI(self, inputTitle, self.orderedNames, self.liveValues)
+
 
     def record(self, userInput) :
         recordEntry = [userInput] + self.getCurrentValues()
