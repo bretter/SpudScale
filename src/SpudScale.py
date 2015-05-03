@@ -12,9 +12,9 @@ class SpudScale() :
 
         configInfo = configReader()
         comPorts = configInfo['ports']
+        addNames = configInfo['scales']
         self.inputTitle = configInfo['input']
         self.orderedNames = configInfo['ordered']
-        self.scaleAddressNames = configInfo['scales']
 
         self.numScales = len(comPorts)
         self.numInputs = len(self.inputTitle)
@@ -22,13 +22,12 @@ class SpudScale() :
         self.currentValues = [None]*self.numScales
         self.lastFiveRecorded = [[None]*(self.numOutputs)]*5
 
-        self.scaleManager = ScaleManager(self.scaleAddressNames, comPorts)
-        self.liveValues = self.scaleManager.getLiveValues()
+        self.scaleManager = ScaleManager(addNames, comPorts)
 
         self.fileManager = FileManager('testOutput.csv')
         self.fileManager.record(self.inputTitle + self.orderedNames)
 
-        #self.ui = UI(self, inputTitle, self.orderedNames, self.liveValues)
+        #self.ui = UI(self, inputTitle, self.orderedNames)
 
 
     def record(self, userInput) :
@@ -70,12 +69,3 @@ def main() :
 
 if __name__ == '__main__':
     main()
-
-"""
-getScaleNames()
-getCurrentValues()
-recordValues(plotNumber)
-getLastFive()
-Is there anything else it would need?
-.setFileName(...)
-"""
