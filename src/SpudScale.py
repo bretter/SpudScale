@@ -22,7 +22,7 @@ class SpudScale() :
         self.currentValues = [None]*self.numScales
         self.lastFiveRecorded = [[None]*(self.numOutputs)]*5
 
-        #self.ui = UI(inputTitle, self.orderedNames)
+        #self.ui = UI(self, inputTitle, self.orderedNames)
 
         self.scaleManager = ScaleManager(self.scaleAddressNames, comPorts)
 
