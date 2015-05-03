@@ -12,15 +12,15 @@ class Scale(threading.Thread):
         self._stop = threading.Event()
         self.container = container
         self.index = index
+        self.cycle = 0
 
     def run(self) :
         ID = chr(ord('A') + self.index)
         while not self.stopped() :
-            time.sleep(random.random())
-            value = str(random.uniform(0, 50.0))[:4]
+            time.sleep(.5)
+            value = ID + str(self.cycle)
             self.container[ID] = value
-            #print("ID: " + ID + "        VALUE: " + str(value))
-            #print(self.container)
+            self.cycle += 1
 
 # is a stop function necessary if thread runs as daemon?
 # maybe necessary to close the serial port?
@@ -29,17 +29,3 @@ class Scale(threading.Thread):
 
     def stopped(self) :
         return self._stop.isSet()
-
-def main() :
-    import time
-    container = {}
-    scale = Scale('COM15', container)
-    print("starting")
-    scale.start()
-    time.sleep(10)
-    print("stopping")
-    scale.stop()
-    time.sleep(10)
-
-if __name__ == '__main__':
-    main()
