@@ -2,7 +2,7 @@
 
 from ScaleManager import ScaleManager
 import FileManager
-import GUI as UI
+#import CLI as UI
 from ConfigReader import configReader
 
 class SpudScale() :
@@ -19,15 +19,15 @@ class SpudScale() :
         self.numScales = len(comPorts)
         self.numInputs = len(self.inputTitle)
         self.numOutputs  = self.numInputs + self.numScales
-        self.currentValues = [None]*self.numScales
-        self.lastFiveRecorded = [[None]*(self.numOutputs)]*5
+        self.currentValues = ['']*self.numScales
+        self.lastFiveRecorded = [['']*(self.numOutputs)]*5
 
         self.scaleManager = ScaleManager(addNames, comPorts)
 
         self.fileName = 'testOutput.csv'
         self.newFile = True
 
-        self.ui = UI.UI(self, self.inputTitle, self.orderedNames)
+        #self.ui = UI.UI(self, self.inputTitle, self.orderedNames)
 
 
     def record(self, userInput) :
@@ -48,6 +48,9 @@ class SpudScale() :
 
     def getLastFiveRecorded(self) :
         return self.lastFiveRecorded
+
+    def getOrderedNames(self) :
+        return self.orderedNames
 
     def setFileName(self, newFileName) :
         self.fileName = newFileName
