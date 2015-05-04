@@ -2,7 +2,7 @@
 
 from ScaleManager import ScaleManager
 import FileManager
-import GUI as UI
+#import GUI as UI
 from ConfigReader import configReader
 
 class SpudScale() :
@@ -27,7 +27,7 @@ class SpudScale() :
         self.fileName = 'testOutput.csv'
         self.newFile = True
 
-        self.ui = UI.UI(self, self.inputTitle, self.orderedNames)
+        #self.ui = UI.UI(self, self.inputTitle, self.orderedNames)
 
 
     def record(self, userInput) :
@@ -73,9 +73,10 @@ def debug() :
     return 0
 
 def main() :
+    import GUI as UI
     spudScale = SpudScale()
 
 
 if __name__ == '__main__':
-    main()
-    #debug()
+    #main()
+    debug()
