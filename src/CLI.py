@@ -3,6 +3,7 @@ class CLI() :
 
     def __init__(self) :
         self.spudScale = SpudScale.SpudScale()
+        self.title = 'SpudScale' + ' '*49 + 'University of Florida'
         self.message = ''
         self.exit = False
         self.orderedNames = self.spudScale.getOrderedNames()
@@ -46,8 +47,10 @@ class CLI() :
         numCurrent = len(currentValues)
         numFive = len(lastFiveRecorded[0])
         numNames = len(self.orderedNames)
-        print('{0:^8s}|{1:^8s}|{2:^44s}|'.format('Live', 'Scale','Recorded'))
-        print('-'*8+'+'+'-'*8+'+'+'-'*(8*5 + 5))
+        print(self.title)
+        print(' '+'_'*78)
+        print(' |{0:^10s}|{1:^10s}|{2:^54s}|'.format('Live', 'Scale','Recorded'))
+        print(' |'+'-'*10+'+'+'-'*10+'+'+'-'*(10*5 + 4)+'|')
         rowVal = ['']*7
         for i in range(0, numFive) :
             if (i < (numFive - numCurrent)) :
@@ -60,9 +63,9 @@ class CLI() :
                 rowVal[1] = self.orderedNames[(i - (numFive - numNames))]
             for j in range(0, len(lastFiveRecorded)) :
                 rowVal[(j + 2)] = lastFiveRecorded[j][i]
-            print('{0:^8s}|{1:^8s}|{2:^8s}|{3:^8s}|{4:^8s}|{5:^8s}|{6:^8s}|'\
+            print(' |{0:^10s}|{1:^10s}|{2:^10s}|{3:^10s}|{4:^10s}|{5:^10s}|{6:^10s}|'\
               .format(rowVal[0],rowVal[1],rowVal[2],rowVal[3],rowVal[4],rowVal[5],rowVal[6]))
-        self.blankLines(5)
+        self.blankLines(3)
 
 
 
@@ -70,7 +73,7 @@ class CLI() :
         print('Current')
 
     def printMain(self) :
-        print('SpudScale' + ' '*49 + 'University of Florida')
+        print(self.title)
         self.blankLines(3)
         print('        _________                .____________             .__')
         print('       /   _____/_____  __ __  __| _/   _____/ ____ _____  |  |   ____')
