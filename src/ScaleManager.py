@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import TestScale
+import Scale
 
 class ScaleManager() :
 
@@ -10,10 +10,8 @@ class ScaleManager() :
         self.threadContainer = dict.fromkeys(self.scaleNames.keys())
         self.nameValuePairs = dict.fromkeys(self.scaleNames.values())
         ## This index will not be needed when the TestScale is pulled out.
-        i = 0
         for port in comPorts :
-            scaleSet.add(TestScale.Scale(port, self.threadContainer, i))
-            i += 1
+            scaleSet.add(Scale.Scale(port, self.threadContainer))
         for scale in scaleSet :
             scale.start()
 
