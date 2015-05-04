@@ -5,6 +5,7 @@ from tkinter import ttk
 import SpudScale
 from ConfigReader import configReader
 import threading
+from tkinter import font
 
 UPDATETIME = 0.01
 
@@ -13,7 +14,7 @@ class GUI():
     def __init__(self):
         """init Tk"""
         root = Tk()
-        root.title("Spud Scale")
+        root.title("SpudScale")
         content = ttk.Frame(root).grid(column=0, row=0, sticky=(N, S, E, W))
 
         """init config info"""
@@ -27,9 +28,12 @@ class GUI():
         self.lastFiveValuesList = [[StringVar() for i in range(11)] for j in range(5)]
         self.plotLabel = StringVar()
 
+        """init font"""
+        labelFont = font.Font(family='Helvetica', size=10, weight='bold')
+
         """init lables"""
         #input Title Label
-        titleLabel = ttk.Label(content, text=self.inputTitle, anchor="center").grid(column = 0,row = 0, sticky=(N, W))
+        titleLabel = ttk.Label(content, text=self.inputTitle, anchor="center",width=10,font=labelFont).grid(column = 0,row = 0, sticky=(N, W))
         #plot Entry
         plotEntry = ttk.Entry(content, textvariable = self.plotLabel,width=10).grid(column = 0, row = 1, sticky=(N, W))
         #record Button
@@ -37,9 +41,9 @@ class GUI():
         #new Button
         newButton = ttk.Button(content, text="New...", command = self.newFile).grid(column = 3, row = 1)
         #last 5 Plots Label
-        last5PlotsLabel = ttk.Label(content, text='Last 5 Plots', anchor='center').grid(column = 4, row= 2)
+        last5PlotsLabel = ttk.Label(content, text='Last 5 Plots', anchor='center',font=labelFont).grid(column = 4, row= 2)
         #live Values Label
-        liveValuesLabel = ttk.Label(content, text='Live Values', anchor='center').grid(column = 0, row= 3)
+        liveValuesLabel = ttk.Label(content, text='Live Values', anchor='center',font=labelFont).grid(column = 0, row= 3)
         #second Title Label
         secondTitleLabel = ttk.Label(content, text=self.inputTitle, anchor="center").grid(column = 1,row = 3)
         #live value labels
@@ -49,6 +53,10 @@ class GUI():
         #history value labels
         for c in range (5):
             historyValueLabels = [ttk.Label(content, textvariable=self.lastFiveValuesList[c][l], anchor="center",relief='ridge',width=10, background='white').grid(column = c + 2,row = l + 3) for l in range(11)]
+
+        #focus on plot entry (not working?)
+        #bind enter to record button
+        root.bind('<Return>', self.record)
 
         #begin threaded loop for updating current scale values
         self.RUNNING = True
