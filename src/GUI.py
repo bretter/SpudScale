@@ -6,7 +6,7 @@ import SpudScale
 from ConfigReader import configReader
 import threading
 
-UPDATETIME = 1.0
+UPDATETIME = 0.01
 
 class GUI():
 
@@ -23,31 +23,32 @@ class GUI():
 
         """init self variables"""
         self.spudScale = SpudScale.SpudScale()
-        self.currentValues = self.spudScale.getCurrentValues()
+        self.currentValues = [StringVar() for i in range(10)]
+        self.lastFiveValuesList = [[StringVar() for i in range(11)] for j in range(5)]
         self.plotLabel = StringVar()
-        self.numRecorded = 0
 
         """init lables"""
-        #inputTitleLabel
+        #input Title Label
         titleLabel = ttk.Label(content, text=self.inputTitle, anchor="center").grid(column = 0,row = 0, sticky=(N, W))
-        #plotEntry
-        plotEntry = ttk.Entry(content, textvariable = self.plotLabel).grid(column = 0, row = 1, sticky=(N, W))
-        #recordButton
+        #plot Entry
+        plotEntry = ttk.Entry(content, textvariable = self.plotLabel,width=10).grid(column = 0, row = 1, sticky=(N, W))
+        #record Button
         recordButton = ttk.Button(content, text="Record ->", command = self.record).grid(column = 1, row = 1, sticky=(N, W))
-        #newButton
+        #new Button
         newButton = ttk.Button(content, text="New...", command = self.newFile).grid(column = 3, row = 1)
-        #last5PlotsLabel
+        #last 5 Plots Label
         last5PlotsLabel = ttk.Label(content, text='Last 5 Plots', anchor='center').grid(column = 4, row= 2)
-        #liveValuesLabel
+        #live Values Label
         liveValuesLabel = ttk.Label(content, text='Live Values', anchor='center').grid(column = 0, row= 3)
-        #secondTitleLabel
+        #second Title Label
         secondTitleLabel = ttk.Label(content, text=self.inputTitle, anchor="center").grid(column = 1,row = 3)
-
-        secondTitleLabel = ttk.Label(content, text=self.inputTitle, anchor="center").grid(column = 1,row = 3)
-        secondTitleLabel = ttk.Label(content, text=self.inputTitle, anchor="center").grid(column = 2,row = 3)
-        secondTitleLabel = ttk.Label(content, text=self.inputTitle, anchor="center").grid(column = 3,row = 3)
-        secondTitleLabel = ttk.Label(content, text=self.inputTitle, anchor="center").grid(column = 4,row = 3)
-        secondTitleLabel = ttk.Label(content, text=self.inputTitle, anchor="center").grid(column = 5,row = 3)
+        #live value labels
+        liveValueLabels = [ttk.Label(content, textvariable=self.currentValues[l], anchor="center", background='white',relief='sunken',width=10).grid(column = 0,row = l + 4) for l in range(10)]
+        #ordered names' labels
+        orderedNamesLabels = [ttk.Label(content, text=self.orderedNames[l], anchor="center",relief='ridge',width=10).grid(column = 1,row = l + 4) for l in range(10)]
+        #history value labels
+        for c in range (5):
+            historyValueLabels = [ttk.Label(content, textvariable=self.lastFiveValuesList[c][l], anchor="center",relief='ridge',width=10, background='white').grid(column = c + 2,row = l + 3) for l in range(11)]
 
         #begin threaded loop for updating current scale values
         self.RUNNING = True
@@ -62,17 +63,28 @@ class GUI():
         fileName = filedialog.asksaveasfilename()
         self.spudScale.setFileName(fileName)
 
+    def updateLastFive(self):
+        for c in range(4,0,-1):
+            for r in range(11):
+                self.lastFiveValuesList[c][r].set(self.lastFiveValuesList[c - 1][r].get())
+
+        self.lastFiveValuesList[0][0].set(self.plotLabel.get())
+        for w in range (10):
+            self.lastFiveValuesList[0][w + 1].set(self.spudScale.getCurrentValues()[w])
+
     def record(self):
-        self.numRecorded += 1
-        if(self.numRecorded % 5 == 0) :
-            self.spudScale.updateLastFiveRecorded()
+        self.updateLastFive()
         self.spudScale.record(self.plotLabel.get())
+        self.plotLabel.set('')
 
     def startTimer(self):
         if self.RUNNING:
             t = threading.Timer(UPDATETIME, self.startTimer)
             t.start()
-            self.currentValues = self.spudScale.getCurrentValues()
+            i = 0
+            for w in self.spudScale.getCurrentValues():
+                self.currentValues[i].set(w)
+                i += 1
 
 def main() :
     gui = GUI()
