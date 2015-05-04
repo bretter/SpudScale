@@ -16,6 +16,7 @@ class GUI():
         root = Tk()
         root.title("SpudScale")
         root.resizable(0,0)
+        root.option_add('*tearOff', FALSE)
         content = ttk.Frame(root).grid(column=0, row=0, sticky=(N, S, E, W))
 
         """init config info"""
@@ -32,6 +33,14 @@ class GUI():
         """init font"""
         labelFont = font.Font(family='Helvetica', size=10, weight='bold')
 
+        """init menubar"""
+        menubar = Menu(root)
+        root['menu'] = menubar
+        menu_file = Menu(menubar)
+        menu_edit = Menu(menubar)
+        menubar.add_cascade(menu=menu_file, label='File')
+        menu_file.add_command(label='New', command=self.newFile)
+
         """init lables"""
         #input Title Label
         titleLabel = ttk.Label(content, text=self.inputTitle, anchor="center",width=10,font=labelFont).grid(column = 0,row = 0, sticky=(N, W))
@@ -39,8 +48,6 @@ class GUI():
         plotEntry = ttk.Entry(content, textvariable = self.plotLabel,width=10).grid(column = 0, row = 1, sticky=(N, W))
         #record Button
         recordButton = ttk.Button(content, text="Record ->", command = self.record).grid(column = 1, row = 1, sticky=(N, W))
-        #new Button
-        newButton = ttk.Button(content, text="New...", command = self.newFile).grid(column = 3, row = 1)
         #last 5 Plots Label
         last5PlotsLabel = ttk.Label(content, text='Last 5 Plots', anchor='center',font=labelFont).grid(column = 4, row= 2)
         #live Values Label
@@ -89,6 +96,7 @@ class GUI():
     def startTimer(self):
         if self.RUNNING:
             t = threading.Timer(UPDATETIME, self.startTimer)
+            t.daemon = True
             t.start()
             i = 0
             for w in self.spudScale.getCurrentValues():
