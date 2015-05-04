@@ -15,6 +15,7 @@ class GUI():
         """init Tk"""
         root = Tk()
         root.title("SpudScale")
+        root.resizable(0,0)
         content = ttk.Frame(root).grid(column=0, row=0, sticky=(N, S, E, W))
 
         """init config info"""
