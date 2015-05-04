@@ -1,8 +1,7 @@
 from distutils.core import setup
 import py2exe
 
-py2exe=dict(compressed=0,
-bundle_files=1)
+py2exe=dict(compressed=0)
 
 options=dict(py2exe=py2exe)
 
