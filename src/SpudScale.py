@@ -76,9 +76,10 @@ def debug() :
     return 0
 
 def main() :
+    import GUI as UI
     spudScale = SpudScale()
 
 
 if __name__ == '__main__':
-    main()
-    #debug()
+    #main()
+    debug()
