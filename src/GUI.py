@@ -6,6 +6,7 @@ import SpudScale
 from ConfigReader import configReader
 import threading
 from tkinter import font
+from tkinter import filedialog
 
 UPDATETIME = 0.1
 
@@ -42,7 +43,8 @@ class GUI():
         menu_file = Menu(menubar)
         menu_edit = Menu(menubar)
         menubar.add_cascade(menu=menu_file, label='File')
-        menu_file.add_command(label='New', command=self.newFile)
+        menu_file.add_command(label='New File', command=self.newFile)
+        menu_file.add_command(label='Open File', command=self.openFile)
 
         """init lables"""
         #input Title Label
@@ -82,13 +84,21 @@ class GUI():
         #end threaded loop
         self.RUNNING = False
 
-    def newFile(self):
-        from tkinter import filedialog
+    def newFile(self) :
+        fileName = filedialog.asksaveasfilename(filetypes=(("Comma Seperated Value", "*.csv")
+                                                         ,("Text", "*.txt")
+                                                         ,("All files", "*.*")))
+        if fileName :
+            self.spudScale.setFileName(fileName)
+            self.fileName.set(self.spudScale.fileName)
+
+    def openFile(self):
         fileName = filedialog.askopenfilename(filetypes=(("Comma Seperated Value", "*.csv")
                                                          ,("Text", "*.txt")
                                                          ,("All files", "*.*")))
-        self.spudScale.setFileName(fileName)
-        self.fileName.set(self.spudScale.fileName)
+        if fileName :
+            self.spudScale.setFileName(fileName)
+            self.fileName.set(self.spudScale.fileName)
 
     def updateLastFive(self):
         lastFive = self.spudScale.getLastFiveRecorded()
