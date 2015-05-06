@@ -6,8 +6,9 @@ import SpudScale
 from ConfigReader import configReader
 import threading
 from tkinter import font
+from tkinter import filedialog
 
-UPDATETIME = 0.01
+UPDATETIME = 0.1
 
 class GUI():
 
@@ -30,8 +31,12 @@ class GUI():
         self.lastFiveValuesList = [[StringVar() for i in range(11)] for j in range(5)]
         self.plotLabel = StringVar()
 
+        self.fileName = StringVar()
+        self.fileName.set(self.spudScale.fileName)
+
         """init font"""
-        labelFont = font.Font(family='Helvetica', size=10, weight='bold')
+        labelFont = font.Font(family='system', size=10, weight='bold')
+        fileFont = font.Font(family='system', size=10, slant='italic')
 
         """init menubar"""
         menubar = Menu(root)
@@ -39,28 +44,33 @@ class GUI():
         menu_file = Menu(menubar)
         menu_edit = Menu(menubar)
         menubar.add_cascade(menu=menu_file, label='File')
-        menu_file.add_command(label='New', command=self.newFile)
+        menu_file.add_command(label='New File', command=self.newFile)
+        menu_file.add_command(label='Open File', command=self.openFile)
 
         """init lables"""
         #input Title Label
         titleLabel = ttk.Label(content, text=self.inputTitle, anchor="center",width=10,font=labelFont).grid(column = 0,row = 0, sticky=(N, W))
+        #current File Label
+        currentFileLabel = ttk.Label(content, text='Current File: ', anchor="center",width=10,font=labelFont).grid(column = 3,row = 0,columnspan=3, sticky=(N, S, E, W))
+        #File Label
+        fileLabel = ttk.Label(content, textvariable=self.fileName, anchor="center",width=10,relief='sunken').grid(column = 2,row = 1,columnspan=6, sticky=(N, S, E, W))
         #plot Entry
-        plotEntry = ttk.Entry(content, textvariable = self.plotLabel,width=10).grid(column = 0, row = 1, sticky=(N, W))
+        plotEntry = ttk.Entry(content, textvariable = self.plotLabel,width=12,takefocus=1).grid(column = 0, row = 1, sticky=(N,S,E, W))
         #record Button
-        recordButton = ttk.Button(content, text="Record ->", command = self.record).grid(column = 1, row = 1, sticky=(N, W))
+        recordButton = ttk.Button(content, text="Record", command = self.record).grid(column = 1, row = 1, sticky=(N,S,E, W))
         #last 5 Plots Label
-        last5PlotsLabel = ttk.Label(content, text='Last 5 Plots', anchor='center',font=labelFont).grid(column = 4, row= 2)
+        last5PlotsLabel = ttk.Label(content, text='Last 5 Plots', anchor='center',font=labelFont).grid(column = 3, row= 2, columnspan=3, sticky=(N, S, E, W))
         #live Values Label
-        liveValuesLabel = ttk.Label(content, text='Live Values', anchor='center',font=labelFont).grid(column = 0, row= 3)
+        liveValuesLabel = ttk.Label(content, text='Live Values', anchor='center',font=labelFont).grid(column = 0, row= 3, sticky=(N, S, E, W))
         #second Title Label
         secondTitleLabel = ttk.Label(content, text=self.inputTitle, anchor="center").grid(column = 1,row = 3)
         #live value labels
-        liveValueLabels = [ttk.Label(content, textvariable=self.currentValues[l], anchor="center", background='white',relief='sunken',width=10).grid(column = 0,row = l + 4) for l in range(10)]
+        liveValueLabels = [ttk.Label(content, textvariable=self.currentValues[l], anchor="center", background='white',relief='sunken',width=12).grid(column = 0,row = l + 4) for l in range(10)]
         #ordered names' labels
-        orderedNamesLabels = [ttk.Label(content, text=self.orderedNames[l], anchor="center",relief='ridge',width=10).grid(column = 1,row = l + 4) for l in range(10)]
+        orderedNamesLabels = [ttk.Label(content, text=self.orderedNames[l], anchor="center",relief='ridge',width=12).grid(column = 1,row = l + 4) for l in range(10)]
         #history value labels
         for c in range (5):
-            historyValueLabels = [ttk.Label(content, textvariable=self.lastFiveValuesList[c][l], anchor="center",relief='ridge',width=10, background='white').grid(column = c + 2,row = l + 3) for l in range(11)]
+            historyValueLabels = [ttk.Label(content, textvariable=self.lastFiveValuesList[c][l], anchor="center",relief='ridge',width=12, background='white').grid(column = c + 2,row = l + 3) for l in range(11)]
 
         #focus on plot entry (not working?)
         #bind enter to record button
@@ -74,23 +84,31 @@ class GUI():
         #end threaded loop
         self.RUNNING = False
 
-    def newFile(self):
-        from tkinter import filedialog
-        fileName = filedialog.asksaveasfilename()
-        self.spudScale.setFileName(fileName)
+    def newFile(self) :
+        fileName = filedialog.asksaveasfilename(filetypes=(("Comma Seperated Value", "*.csv")
+                                                         ,("Text", "*.txt")
+                                                         ,("All files", "*.*")))
+        if fileName :
+            self.spudScale.setFileName(fileName)
+            self.fileName.set(self.spudScale.fileName)
+
+    def openFile(self):
+        fileName = filedialog.askopenfilename(filetypes=(("Comma Seperated Value", "*.csv")
+                                                         ,("Text", "*.txt")
+                                                         ,("All files", "*.*")))
+        if fileName :
+            self.spudScale.setFileName(fileName)
+            self.fileName.set(self.spudScale.fileName)
 
     def updateLastFive(self):
-        for c in range(4,0,-1):
+        lastFive = self.spudScale.getLastFiveRecorded()
+        for c in range(5):
             for r in range(11):
-                self.lastFiveValuesList[c][r].set(self.lastFiveValuesList[c - 1][r].get())
+                self.lastFiveValuesList[c][r].set(lastFive[c][r])
 
-        self.lastFiveValuesList[0][0].set(self.plotLabel.get())
-        for w in range (10):
-            self.lastFiveValuesList[0][w + 1].set(self.spudScale.getCurrentValues()[w])
-
-    def record(self):
-        self.updateLastFive()
+    def record(self,*args):
         self.spudScale.record(self.plotLabel.get())
+        self.updateLastFive()
         self.plotLabel.set('')
 
     def startTimer(self):

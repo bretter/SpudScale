@@ -12,6 +12,7 @@ class SpudScale() :
         configInfo = configReader()
         comPorts = configInfo['ports']
         addNames = configInfo['scales']
+        testMode = configInfo['test-mode']
         self.inputTitle = configInfo['input']
         self.orderedNames = configInfo['ordered']
 
@@ -21,7 +22,7 @@ class SpudScale() :
         self.currentValues = ['']*self.numScales
         self.lastFiveRecorded = [['']*(self.numOutputs)]*5
 
-        self.scaleManager = ScaleManager(addNames, comPorts)
+        self.scaleManager = ScaleManager(addNames, comPorts, testMode)
 
         self.fileName = 'testOutput.csv'
         self.newFile = True
