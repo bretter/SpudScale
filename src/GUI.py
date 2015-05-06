@@ -52,11 +52,11 @@ class GUI():
         #current File Label
         currentFileLabel = ttk.Label(content, text='Current File: ', anchor="center",width=10,font=labelFont).grid(column = 3,row = 0,columnspan=3, sticky=(N, S, E, W))
         #File Label
-        fileLabel = ttk.Label(content, textvariable=self.fileName, anchor="center",width=10,relief='sunken',font=fileFont).grid(column = 2,row = 1,columnspan=6, sticky=(N, S, E, W))
+        fileLabel = ttk.Label(content, textvariable=self.fileName, anchor="center",width=10,relief='sunken').grid(column = 2,row = 1,columnspan=6, sticky=(N, S, E, W))
         #plot Entry
         plotEntry = ttk.Entry(content, textvariable = self.plotLabel,width=12,takefocus=1).grid(column = 0, row = 1, sticky=(N,S,E, W))
         #record Button
-        recordButton = ttk.Button(content, text="Record ->", command = self.record).grid(column = 1, row = 1, sticky=(N,S,E, W))
+        recordButton = ttk.Button(content, text="Record", command = self.record).grid(column = 1, row = 1, sticky=(N,S,E, W))
         #last 5 Plots Label
         last5PlotsLabel = ttk.Label(content, text='Last 5 Plots', anchor='center',font=labelFont).grid(column = 3, row= 2, columnspan=3, sticky=(N, S, E, W))
         #live Values Label
