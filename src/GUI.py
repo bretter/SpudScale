@@ -7,6 +7,7 @@ from ConfigReader import configReader
 import threading
 from tkinter import font
 from tkinter import filedialog
+from tkinter import messagebox
 
 UPDATETIME = 0.1
 
@@ -46,6 +47,7 @@ class GUI():
         menubar.add_cascade(menu=menu_file, label='File')
         menu_file.add_command(label='New File', command=self.newFile)
         menu_file.add_command(label='Open File', command=self.openFile)
+        menu_file.add_command(label='About', command=self.aboutDialog)
 
         """init lables"""
         #input Title Label
@@ -106,7 +108,7 @@ class GUI():
             for r in range(11):
                 self.lastFiveValuesList[c][r].set(lastFive[c][r])
 
-    def record(self,*args):
+    def record(self):
         self.spudScale.record(self.plotLabel.get())
         self.updateLastFive()
         self.plotLabel.set('')
@@ -120,6 +122,24 @@ class GUI():
             for w in self.spudScale.getCurrentValues():
                 self.currentValues[i].set(w)
                 i += 1
+
+    def aboutDialog(self):
+        messagebox.showinfo(\
+            'About SpudScale',
+            'SpudScale was developed for University of Florida\'s '
+            'department of Horticultural Sciences.\n'
+            '\n'
+            'Developed and maintained by:\n'
+            '\n'
+            'Brett Nelson\n'
+            'Brett@BrettNelson.org\n'
+            '\n'
+            'Rocco Febbo\n'
+            '?????????????????????\n'
+            '\n'
+            'For source code and licensing information see:\n'
+            'www.github.com\\bretter\\SpudScale')
+        return
 
 def main() :
     gui = GUI()
