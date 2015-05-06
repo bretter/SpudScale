@@ -3,6 +3,8 @@
 import Scale
 import TestScale
 
+class ScaleManager() :
+
     def __init__(self, scaleNames, comPorts, test) :
         scaleSet = set()
         self.scaleNames = scaleNames
@@ -11,7 +13,6 @@ import TestScale
         if test :
             i = 0
             for port in comPorts :
-
                 scaleSet.add(TestScale.Scale(port, self.threadContainer, i))
                 i += 1
         else :
