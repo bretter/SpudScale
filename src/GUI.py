@@ -7,7 +7,7 @@ from ConfigReader import configReader
 import threading
 from tkinter import font
 
-UPDATETIME = 0.01
+UPDATETIME = 0.1
 
 class GUI():
 
@@ -29,6 +29,8 @@ class GUI():
         self.currentValues = [StringVar() for i in range(10)]
         self.lastFiveValuesList = [[StringVar() for i in range(11)] for j in range(5)]
         self.plotLabel = StringVar()
+        self.fileName = StringVar()
+        self.fileName.set(self.spudScale.fileName)
 
         """init font"""
         labelFont = font.Font(family='Helvetica', size=10, weight='bold')
@@ -44,8 +46,12 @@ class GUI():
         """init lables"""
         #input Title Label
         titleLabel = ttk.Label(content, text=self.inputTitle, anchor="center",width=10,font=labelFont).grid(column = 0,row = 0, sticky=(N, W))
+        #current File Label
+        currentFileLabel = ttk.Label(content, text='Current File: ', anchor="center",width=10).grid(column = 4,row = 0, sticky=(N, W))
+        #File Label
+        fileLabel = ttk.Label(content, textvariable=self.fileName, anchor="center",width=10,relief='sunken').grid(column = 5,row = 0,columnspan=2, sticky=(N,S,E, W))
         #plot Entry
-        plotEntry = ttk.Entry(content, textvariable = self.plotLabel,width=10).grid(column = 0, row = 1, sticky=(N, W))
+        plotEntry = ttk.Entry(content, textvariable = self.plotLabel,width=10,takefocus=1).grid(column = 0, row = 1, sticky=(N, W))
         #record Button
         recordButton = ttk.Button(content, text="Record ->", command = self.record).grid(column = 1, row = 1, sticky=(N, W))
         #last 5 Plots Label
@@ -66,6 +72,7 @@ class GUI():
         #bind enter to record button
         root.bind('<Return>', self.record)
 
+
         #begin threaded loop for updating current scale values
         self.RUNNING = True
         self.startTimer()
@@ -76,21 +83,21 @@ class GUI():
 
     def newFile(self):
         from tkinter import filedialog
-        fileName = filedialog.asksaveasfilename()
+        fileName = filedialog.askopenfilename(filetypes=(("Comma Seperated Value", "*.csv")
+                                                         ,("Text", "*.txt")
+                                                         ,("All files", "*.*")))
         self.spudScale.setFileName(fileName)
+        self.fileName.set(self.spudScale.fileName)
 
     def updateLastFive(self):
-        for c in range(4,0,-1):
+        lastFive = self.spudScale.getLastFiveRecorded()
+        for c in range(5):
             for r in range(11):
-                self.lastFiveValuesList[c][r].set(self.lastFiveValuesList[c - 1][r].get())
+                self.lastFiveValuesList[c][r].set(lastFive[c][r])
 
-        self.lastFiveValuesList[0][0].set(self.plotLabel.get())
-        for w in range (10):
-            self.lastFiveValuesList[0][w + 1].set(self.spudScale.getCurrentValues()[w])
-
-    def record(self):
-        self.updateLastFive()
+    def record(self,*args):
         self.spudScale.record(self.plotLabel.get())
+        self.updateLastFive()
         self.plotLabel.set('')
 
     def startTimer(self):
