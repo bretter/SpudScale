@@ -16,10 +16,6 @@ class CLI() :
             if selection in choices :
                 if selection == '1' :
                     self.recordMode()
-                elif selection == '2' :
-                    self.printCurrent()
-                elif selection == '3' :
-                    self.printLastFive()
                 elif selection == 'Q' :
                     self.exit = True
             else :
@@ -84,7 +80,7 @@ class CLI() :
         self.blankLines(7)
         print('Main Menu:')
         print('  (1) Record Mode')
-        print('  (2) Set Output File')
+        print('  (2) Set Output File --not yet implemented')
         print('  (Q) Exit')
         self.blankLines(2)
         print(self.message)
