@@ -83,7 +83,6 @@ class GUI():
                       anchor="center", background='white', relief='sunken',
                       width=12).grid(column=0, row=(i + 4))
             # ordered names' labels
-        for i in range(len(self.orderedNames)):
             fieldName = self.orderedNames[i]
             ttk.Label(content, text=fieldName, anchor="center", relief='ridge',
                       width=12).grid(column=1, row=(i + 4))
@@ -97,7 +96,8 @@ class GUI():
 
         # focus on plot entry (not working?)
         # bind enter to record button
-        root.bind('<Return>', self.record)
+        root.bind('<Return>', self.enterPressed)
+
 
         # begin threaded loop for updating current scale values
         self.RUNNING = True
@@ -106,6 +106,9 @@ class GUI():
         root.mainloop()
         # end threaded loop
         self.RUNNING = False
+
+    def enterPressed(self, event):
+        self.record()
 
     def newFile(self):
         fileName = filedialog.asksaveasfilename(
