@@ -135,7 +135,7 @@ class GUI():
             'Brett@BrettNelson.org\n'
             '\n'
             'Rocco Febbo\n'
-            '?????????????????????\n'
+            'febbo87@gmail.com\n'
             '\n'
             'For source code and licensing information see:\n'
             'www.github.com\\bretter\\SpudScale')
