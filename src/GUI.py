@@ -98,7 +98,6 @@ class GUI():
         # bind enter to record button
         root.bind('<Return>', self.enterPressed)
 
-
         # begin threaded loop for updating current scale values
         self.RUNNING = True
         self.startTimer()
