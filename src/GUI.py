@@ -6,18 +6,18 @@ from ConfigReader import configReader
 import SpudScale
 import threading
 
-UPDATETIME = 0.1
+UPDATETIME = 100
 
 
 class GUI():
 
     def __init__(self):
         # init Tk
-        root = Tk()
-        root.title("SpudScale")
-        root.resizable(0, 0)
-        root.option_add('*tearOff', False)
-        content = ttk.Frame(root).grid(column=0, row=0, sticky=(N, S, E, W))
+        self.root = Tk()
+        self.root.title("SpudScale")
+        self.root.resizable(0, 0)
+        self.root.option_add('*tearOff', False)
+        content = ttk.Frame(self.root).grid(column=0, row=0, sticky=(N, S, E, W))
 
         # init config info
         configInfo = configReader()
@@ -39,8 +39,8 @@ class GUI():
         # init font
         labelFont = font.Font(family='system', size=10, weight='bold')
         # init menubar
-        menubar = Menu(root)
-        root['menu'] = menubar
+        menubar = Menu(self.root)
+        self.root['menu'] = menubar
         menu_file = Menu(menubar)
         menubar.add_cascade(menu=menu_file, label='File')
         menu_file.add_command(label='New File', command=self.newFile)
@@ -96,16 +96,12 @@ class GUI():
 
         # focus on plot entry (not working?)
         # bind enter to record button
-        root.bind('<Return>', self.enterPressed)
+        self.root.bind('<Return>', self.enterPressed)
 
 
-        # begin threaded loop for updating current scale values
-        self.RUNNING = True
-        self.startTimer()
         # begin Tk's mainloop
-        root.mainloop()
-        # end threaded loop
-        self.RUNNING = False
+        self.update()
+        self.root.mainloop()
 
     def enterPressed(self, event):
         self.record()
@@ -137,15 +133,13 @@ class GUI():
         self.updateLastFive()
         self.plotLabel.set('')
 
-    def startTimer(self):
-        if self.RUNNING:
-            t = threading.Timer(UPDATETIME, self.startTimer)
-            t.daemon = True
-            t.start()
-            newCurrentValues = self.spudScale.getCurrentValues()
-            for i in range(len(newCurrentValues)):
-                value = newCurrentValues[i]
-                self.currentValues[i].set(value)
+    def update(self):
+        newCurrentValues = self.spudScale.getCurrentValues()
+        for i in range(len(newCurrentValues)):
+            value = newCurrentValues[i]
+            self.currentValues[i].set(value)
+
+        self.root.after(UPDATETIME, self.update)
 
     def aboutDialog(self):
         messagebox.showinfo(
