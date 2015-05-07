@@ -1,112 +1,133 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-from tkinter import *
-from tkinter import ttk
-import SpudScale
+from tkinter import Tk, ttk, N, S, E, W, StringVar, Menu
+from tkinter import font, filedialog, messagebox
 from ConfigReader import configReader
+import SpudScale
 import threading
-from tkinter import font
-from tkinter import filedialog
-from tkinter import messagebox
 
 UPDATETIME = 0.1
+
 
 class GUI():
 
     def __init__(self):
-        """init Tk"""
+        # init Tk
         root = Tk()
         root.title("SpudScale")
-        root.resizable(0,0)
-        root.option_add('*tearOff', FALSE)
+        root.resizable(0, 0)
+        root.option_add('*tearOff', False)
         content = ttk.Frame(root).grid(column=0, row=0, sticky=(N, S, E, W))
 
-        """init config info"""
+        # init config info
         configInfo = configReader()
         self.inputTitle = configInfo['input']
         self.orderedNames = configInfo['ordered']
 
-        """init self variables"""
+        # init self variables
         self.spudScale = SpudScale.SpudScale()
-        self.currentValues = [StringVar() for i in range(10)]
-        self.lastFiveValuesList = [[StringVar() for i in range(11)] for j in range(5)]
+        self.currentValues = [StringVar() for i in
+                              range(len(self.orderedNames))]
+        self.lastFiveValues = [[StringVar() for i in range(
+                              len(self.orderedNames) + len(self.inputTitle))]
+                              for j in range(5)]
         self.plotLabel = StringVar()
 
         self.fileName = StringVar()
         self.fileName.set(self.spudScale.fileName)
 
-        """init font"""
+        # init font
         labelFont = font.Font(family='system', size=10, weight='bold')
-        fileFont = font.Font(family='system', size=10, slant='italic')
-
-        """init menubar"""
+        # init menubar
         menubar = Menu(root)
         root['menu'] = menubar
         menu_file = Menu(menubar)
-        menu_edit = Menu(menubar)
         menubar.add_cascade(menu=menu_file, label='File')
         menu_file.add_command(label='New File', command=self.newFile)
         menu_file.add_command(label='Open File', command=self.openFile)
         menu_file.add_command(label='About', command=self.aboutDialog)
 
-        """init lables"""
-        #input Title Label
-        titleLabel = ttk.Label(content, text=self.inputTitle, anchor="center",width=10,font=labelFont).grid(column = 0,row = 0, sticky=(N, W))
-        #current File Label
-        currentFileLabel = ttk.Label(content, text='Current File: ', anchor="center",width=10,font=labelFont).grid(column = 3,row = 0,columnspan=3, sticky=(N, S, E, W))
-        #File Label
-        fileLabel = ttk.Label(content, textvariable=self.fileName, anchor="center",width=10,relief='sunken').grid(column = 2,row = 1,columnspan=6, sticky=(N, S, E, W))
-        #plot Entry
-        plotEntry = ttk.Entry(content, textvariable = self.plotLabel,width=12,takefocus=1).grid(column = 0, row = 1, sticky=(N,S,E, W))
-        #record Button
-        recordButton = ttk.Button(content, text="Record", command = self.record).grid(column = 1, row = 1, sticky=(N,S,E, W))
-        #last 5 Plots Label
-        last5PlotsLabel = ttk.Label(content, text='Last 5 Plots', anchor='center',font=labelFont).grid(column = 3, row= 2, columnspan=3, sticky=(N, S, E, W))
-        #live Values Label
-        liveValuesLabel = ttk.Label(content, text='Live Values', anchor='center',font=labelFont).grid(column = 0, row= 3, sticky=(N, S, E, W))
-        #second Title Label
-        secondTitleLabel = ttk.Label(content, text=self.inputTitle, anchor="center").grid(column = 1,row = 3)
-        #live value labels
-        liveValueLabels = [ttk.Label(content, textvariable=self.currentValues[l], anchor="center", background='white',relief='sunken',width=12).grid(column = 0,row = l + 4) for l in range(10)]
-        #ordered names' labels
-        orderedNamesLabels = [ttk.Label(content, text=self.orderedNames[l], anchor="center",relief='ridge',width=12).grid(column = 1,row = l + 4) for l in range(10)]
-        #history value labels
-        for c in range (5):
-            historyValueLabels = [ttk.Label(content, textvariable=self.lastFiveValuesList[c][l], anchor="center",relief='ridge',width=12, background='white').grid(column = c + 2,row = l + 3) for l in range(11)]
+        # init lables
+        # input Title Label
+        ttk.Label(content, text=self.inputTitle, anchor="center", width=10,
+                  font=labelFont).grid(column=0, row=0, sticky=(N, W))
+        # current File Label
+        ttk.Label(content, text='Current File: ', anchor="center", width=10,
+                  font=labelFont).grid(column=3, row=0, columnspan=3,
+                  sticky=(N, S, E, W))
+        # File Label
+        ttk.Label(content, textvariable=self.fileName, anchor="center",
+                  width=10, relief='sunken').grid(column=2, row=1,
+                  columnspan=6, sticky=(N, S, E, W))
+        # plot Entry
+        ttk.Entry(content, textvariable=self.plotLabel, width=12, takefocus=1)\
+            .grid(column=0, row=1, sticky=(N, S, E, W))
+        # record Button
+        ttk.Button(content, text="Record", command=self.record)\
+            .grid(column=1, row=1, sticky=(N, S, E, W))
+        # last 5 Plots Label
+        ttk.Label(content, text='Last 5 Plots', anchor='center',
+                  font=labelFont).grid(column=3, row=2, columnspan=3,
+                  sticky=(N, S, E, W))
+        # live Values Label
+        ttk.Label(content, text='Live Values', anchor='center',
+                  font=labelFont).grid(column=0, row=3, sticky=(N, S, E, W))
+        # second Title Label
+        ttk.Label(content, text=self.inputTitle, anchor="center")\
+            .grid(column=1, row=3)
 
-        #focus on plot entry (not working?)
-        #bind enter to record button
+        for i in range(len(self.orderedNames)):
+            # live value labels
+            scaleValue = self.currentValues[i]
+            ttk.Label(content, textvariable=scaleValue,
+                      anchor="center", background='white', relief='sunken',
+                      width=12).grid(column=0, row=(i + 4))
+            # ordered names' labels
+        for i in range(len(self.orderedNames)):
+            fieldName = self.orderedNames[i]
+            ttk.Label(content, text=fieldName, anchor="center", relief='ridge',
+                      width=12).grid(column=1, row=(i + 4))
+
+        # history value labels
+        for c in range(5):
+            for i in range(len(self.orderedNames) + len(self.inputTitle)):
+                ttk.Label(content, textvariable=self.lastFiveValues[c][i],
+                          anchor="center", relief='ridge', width=12,
+                          background='white').grid(column=(c + 2), row=(i + 3))
+
+        # focus on plot entry (not working?)
+        # bind enter to record button
         root.bind('<Return>', self.record)
 
-        #begin threaded loop for updating current scale values
+        # begin threaded loop for updating current scale values
         self.RUNNING = True
         self.startTimer()
-        #begin Tk's mainloop
+        # begin Tk's mainloop
         root.mainloop()
-        #end threaded loop
+        # end threaded loop
         self.RUNNING = False
 
-    def newFile(self) :
-        fileName = filedialog.asksaveasfilename(filetypes=(("Comma Seperated Value", "*.csv")
-                                                         ,("Text", "*.txt")
-                                                         ,("All files", "*.*")))
-        if fileName :
+    def newFile(self):
+        fileName = filedialog.asksaveasfilename(
+            filetypes=(("Comma Seperated Value", "*.csv"),
+                               ("Text", "*.txt"), ("All files", "*.*")))
+        if fileName:
             self.spudScale.setFileName(fileName)
             self.fileName.set(self.spudScale.fileName)
 
     def openFile(self):
-        fileName = filedialog.askopenfilename(filetypes=(("Comma Seperated Value", "*.csv")
-                                                         ,("Text", "*.txt")
-                                                         ,("All files", "*.*")))
-        if fileName :
+        fileName = filedialog.askopenfilename(
+                  filetypes=(("Comma Seperated Value", "*.csv"),
+                                     ("Text", "*.txt"), ("All files", "*.*")))
+        if fileName:
             self.spudScale.setFileName(fileName)
             self.fileName.set(self.spudScale.fileName)
 
     def updateLastFive(self):
         lastFive = self.spudScale.getLastFiveRecorded()
         for c in range(5):
-            for r in range(11):
-                self.lastFiveValuesList[c][r].set(lastFive[c][r])
+            for r in range(len(self.orderedNames) + len(self.inputTitle)):
+                self.lastFiveValues[c][r].set(lastFive[c][r])
 
     def record(self):
         self.spudScale.record(self.plotLabel.get())
@@ -118,13 +139,13 @@ class GUI():
             t = threading.Timer(UPDATETIME, self.startTimer)
             t.daemon = True
             t.start()
-            i = 0
-            for w in self.spudScale.getCurrentValues():
-                self.currentValues[i].set(w)
-                i += 1
+            newCurrentValues = self.spudScale.getCurrentValues()
+            for i in range(len(newCurrentValues)):
+                value = newCurrentValues[i]
+                self.currentValues[i].set(value)
 
     def aboutDialog(self):
-        messagebox.showinfo(\
+        messagebox.showinfo(
             'About SpudScale',
             'SpudScale was developed for University of Florida\'s '
             'department of Horticultural Sciences.\n'
@@ -141,8 +162,9 @@ class GUI():
             'www.github.com\\bretter\\SpudScale')
         return
 
-def main() :
-    gui = GUI()
+
+def main():
+    GUI()
 
 if __name__ == '__main__':
     main()
