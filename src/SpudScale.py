@@ -13,7 +13,10 @@ class SpudScale():
         configInfo = configReader()
         comPorts = configInfo['ports']
         addNames = configInfo['scales']
-        testMode = configInfo['test-mode']
+        if 'test-mode' in configInfo:
+            testMode = configInfo['test-mode']
+        else:
+            testMode = False
         self.inputTitle = configInfo['input']
         self.orderedNames = configInfo['ordered']
 

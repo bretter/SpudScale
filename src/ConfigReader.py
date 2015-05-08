@@ -1,9 +1,21 @@
+import os
 import yaml
 
 
 def configReader():
-    stream = open('spudscale.config', 'r')
+    fileName = 'spudscale.config'
+    dirName = os.path.dirname(os.path.abspath(__file__))
+    pkgdDirName = dirName.replace('library.zip', '')
     config = {}
+
+    try:
+        stream = open(fileName, 'r')
+    except FileNotFoundError:
+        try:
+            pkgdFile = pkgdDirName + fileName
+            stream = open(pkgdFile, 'r')
+        except FileNotFoundError:
+            raise
     for data in yaml.load_all(stream):
         config = data
     config['scales'] = scaleIndexToAddress(config['scales'])
