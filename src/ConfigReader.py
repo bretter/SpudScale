@@ -1,5 +1,6 @@
 import yaml
 
+
 def configReader():
     stream = open('spudscale.config', 'r')
     config = {}
@@ -8,11 +9,9 @@ def configReader():
     config['scales'] = scaleIndexToAddress(config['scales'])
     return config
 
-def scaleIndexToAddress(scaleIndexedNames) :
+
+def scaleIndexToAddress(scaleIndexedNames):
     scaleAddressNames = {}
-    for index, name in scaleIndexedNames.items() :
+    for index, name in scaleIndexedNames.items():
         scaleAddressNames[chr(ord('A') + (index - 1))] = name
     return scaleAddressNames
-
-if __name__ == '__main__':
-    print(configReader())

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import csv
 
+
 def readData(fileName):
     history = []
     with open(fileName, newline='') as csvfile:
@@ -9,6 +10,7 @@ def readData(fileName):
         for row in reader:
             history.append(row)
     return history
+
 
 def writeData(fileName, readout):
     with open(fileName, 'a', newline='') as csvfile:
