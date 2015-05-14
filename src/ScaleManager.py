@@ -1,10 +1,17 @@
 #!/usr/bin/python3
-
 import Scale
 import TestScale
 
 
 class ScaleManager():
+    """ScaleManager instantiates individual Scale objects and provides a
+    thread-safe method of collecting data from them.
+
+    Args:
+        scaleNames: list of strings; unique names used to ID individual scales.
+        comPorts: list of strings; names of the COM ports to read from.
+        test: bool; set true if physical scales are unavailable/disconnected.
+    """
 
     def __init__(self, scaleNames, comPorts, test):
         scaleSet = set()
@@ -23,6 +30,10 @@ class ScaleManager():
             scale.start()
 
     def getValues(self):
+        """Retrieves most recentl scale output and outputs as a dictionary.
+
+        Returns:
+            List of strings; most current reading from Scale objects."""
         for ID, name in self.scaleNames.items():
             self.nameValuePairs[name] = self.threadContainer[ID]
         return self.nameValuePairs

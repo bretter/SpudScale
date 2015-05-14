@@ -1,11 +1,15 @@
 #!/usr/bin/python3
-
 from ScaleManager import ScaleManager
 from ConfigReader import configReader
 import FileManager
 
 
 class SpudScale():
+    """The SpudScale class acts as a 'main' class for the code back-end.
+
+    SpudScale instantiates all the major components of system.
+    It also manages communication between the disparate classes.
+    """
 
     def __init__(self):
         self.fileName = ''
@@ -32,6 +36,14 @@ class SpudScale():
         self.newFile = True
 
     def record(self, userInput):
+        """Collects and formats user input and data for writing to a file.
+
+        Args:
+            uerInput: User inputted value to be recorded with data.
+
+        Returns:
+            None
+        """
         if self.newFile:
             recordEntry = self.inputTitle + self.orderedNames
             FileManager.writeData(self.fileName, recordEntry)
@@ -41,6 +53,10 @@ class SpudScale():
         self.updateLastFiveRecorded(recordEntry)
 
     def getCurrentValues(self):
+        """Gets recent scale values and orders them based on config file.
+
+        Returns:
+            List of strings; values sorted for use by GUI."""
         newValues = self.scaleManager.getValues()
         for i in range(0, self.numScales):
             name = self.orderedNames[i]
@@ -48,31 +64,39 @@ class SpudScale():
         return self.currentValues
 
     def getLastFiveRecorded(self):
+        """Returns the five most recent output entries.
+
+        Retures:
+            List of lists of strings; recently recorded values.
+        """
         return self.lastFiveRecorded
 
     def getOrderedNames(self):
+        """Getter function for ordered names as defined in the config file.
+
+        Returns:
+            List of strings; scale names."""
         return self.orderedNames
 
     def setFileName(self, newFileName):
+        """Sets the name of the output file.
+
+        Args:
+            newFileName: string containing new file name.
+
+        Returns:
+            None
+        """
         self.fileName = newFileName
         self.newFile = True
 
     def updateLastFiveRecorded(self, recordEntry):
+        """Updates the list of recently recorded values.
+
+        Args:
+            recordEntry: list of strings."""
         i = len(self.lastFiveRecorded) - 1
         while i > 0:
             self.lastFiveRecorded[i] = self.lastFiveRecorded[i - 1]
             i -= 1
         self.lastFiveRecorded[0] = recordEntry
-
-
-def debug():
-    import time
-    spudScale = SpudScale()
-    time.sleep(10)
-    for i in range(0, 100):
-        print(spudScale.getCurrentValues())
-        spudScale.record('Line' + str(i))
-        if ((i % 5) == 0):
-            print(spudScale.getLastFiveRecorded())
-        time.sleep(.5)
-    return 0

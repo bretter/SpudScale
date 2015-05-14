@@ -1,10 +1,19 @@
 #!/usr/bin/python3
-
 import threading
 import time
 
 
 class Scale(threading.Thread):
+    """This Scale is a debugging tool for use when real scales are unavailable.
+
+    Each instance of Scale launches a thread which generates dummy output
+    and saves that input to an entry in a dict.
+
+    Args:
+        comPort: string; name of a COM port.
+        container: dict; shared memory for use by all Scale threads.
+        index: string; used to identify the scale.
+    """
 
     def __init__(self, comPort, container, index):
         threading.Thread.__init__(self, daemon=True)
@@ -15,6 +24,7 @@ class Scale(threading.Thread):
         self.cycle = 0
 
     def run(self):
+        """Dummy output data loop."""
         ID = chr(ord('A') + self.index)
         while not self.stopped():
             time.sleep(.5)

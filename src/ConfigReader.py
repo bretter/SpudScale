@@ -3,6 +3,10 @@ import yaml
 
 
 def configReader():
+    """Opens and extracts config options from spudscale.config.
+
+    Returns:
+        List; containing all config information."""
     fileName = 'spudscale.config'
     dirName = os.path.dirname(os.path.abspath(__file__))
     pkgdDirName = dirName.replace('library.zip', '')
@@ -23,6 +27,13 @@ def configReader():
 
 
 def scaleIndexToAddress(scaleIndexedNames):
+    """Replaces numerical indices with corresponding alphabetic keys.
+
+    Args:
+        scaleIndexedNames: dict; with numerical keys.
+
+    Returns:
+        Dict; with adjusted keys."""
     scaleAddressNames = {}
     for index, name in scaleIndexedNames.items():
         scaleAddressNames[chr(ord('A') + (index - 1))] = name

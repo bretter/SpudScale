@@ -1,10 +1,8 @@
 #!/usr/bin/python3
-# -*- coding: utf-8 -*-
 from tkinter import Tk, ttk, N, S, E, W, StringVar, Menu
 from tkinter import font, filedialog, messagebox
 from ConfigReader import configReader
 import SpudScale
-import threading
 
 UPDATETIME = 100
 
@@ -103,9 +101,11 @@ class GUI():
         self.root.mainloop()
 
     def enterPressed(self, event):
+        """Records data when the enter key is pressed."""
         self.record()
 
     def newFile(self):
+        """Prompts user to create a file and sets it as the output file."""
         fileName = filedialog.asksaveasfilename(
             filetypes=(("Comma Seperated Value", "*.csv"),
                        ("Text", "*.txt"),
@@ -117,6 +117,7 @@ class GUI():
             self.fileName.set(self.spudScale.fileName)
 
     def openFile(self):
+        """Prompts user to open existing file and sets it as the output file."""
         fileName = filedialog.askopenfilename(
                   filetypes=(("Comma Seperated Value", "*.csv"),
                              ("Text", "*.txt"),
@@ -126,17 +127,20 @@ class GUI():
             self.fileName.set(self.spudScale.fileName)
 
     def updateLastFive(self):
+        """Updates the Last Five display array."""
         lastFive = self.spudScale.getLastFiveRecorded()
         for c in range(5):
             for r in range(len(self.orderedNames) + len(self.inputTitle)):
                 self.lastFiveValues[c][r].set(lastFive[c][r])
 
     def record(self):
+        """Gets the user input and sends it to the SpudScale record fxn."""
         self.spudScale.record(self.plotLabel.get())
         self.updateLastFive()
         self.plotLabel.set('')
 
     def update(self):
+        """Gets most recently recorded scale values and updates the display."""
         newCurrentValues = self.spudScale.getCurrentValues()
         for i in range(len(newCurrentValues)):
             value = newCurrentValues[i]
@@ -145,6 +149,7 @@ class GUI():
         self.root.after(UPDATETIME, self.update)
 
     def aboutDialog(self):
+        """Displays about dialog."""
         messagebox.showinfo(
             'About SpudScale',
             'SpudScale was developed for University of Florida\'s '

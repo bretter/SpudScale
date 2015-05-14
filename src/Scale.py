@@ -4,6 +4,15 @@ import serial
 
 
 class Scale(threading.Thread):
+    """Scale connects to a designated COM port and continuously listens for data.
+
+    Each instance of Scale launches a thread which reads from a COM port it
+    processes that data and saves select information to an entry in a dict.
+
+    Args:
+        comPort: string; name of a COM port.
+        container: dict; shared memory for use by all Scale threads.
+    """
 
     def __init__(self, comPort, container):
         threading.Thread.__init__(self, daemon=True)
@@ -12,13 +21,15 @@ class Scale(threading.Thread):
         self.port = comPort
         self.ser = serial.Serial(
             port=comPort,
-            baudrate=9600,
+            baudrate=2400,
             parity=serial.PARITY_NONE,
             stopbits=serial.STOPBITS_ONE,
             bytesize=serial.EIGHTBITS,
             timeout=None)
+        self.ser.close()
 
     def run(self):
+        """Listens for scale messages and updates shared memory."""
         # length of scale output (used to ensure
         # only complete messages are processed)
         msgLength = 21
